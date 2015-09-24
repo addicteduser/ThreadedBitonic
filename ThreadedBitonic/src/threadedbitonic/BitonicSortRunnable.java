@@ -9,14 +9,14 @@ package threadedbitonic;
  *
  * @author Wryd
  */
-public class BitonicSortThread extends Thread {
+public class BitonicSortRunnable implements Runnable {
     private int _index;
     private int _size;
     private boolean _direction;
     
-    public BitonicSortThread(){}
+    public BitonicSortRunnable(){}
     
-    public BitonicSortThread(int index, int size, boolean direction){
+    public BitonicSortRunnable(int index, int size, boolean direction){
         _index = index;
         _size = size;
         _direction = direction;
@@ -32,12 +32,11 @@ public class BitonicSortThread extends Thread {
         if (size <= 1)
             return;
         
-        System.out.println("Sorting i:" + index + " s:" + size + " d:" + (direction ? "ASCENDING" : "DESCENDING"));
+        //System.out.println("Sorting i:" + index + " s:" + size + " d:" + (direction ? "ASCENDING" : "DESCENDING"));
         int median = size / 2;
         if (size > Bitonic.minimumLength) {
-            BitonicSortThread btLeft = new BitonicSortThread(index, median, Bitonic.ASCENDING);
-            BitonicSortThread btRight = new BitonicSortThread(index + median, median, Bitonic.DESCENDING);
-            Thread t = new Thread(new Runnable(){ public void run(){}});
+            Thread btLeft = new Thread(new BitonicSortRunnable(index, median, Bitonic.ASCENDING));
+            Thread btRight = new Thread(new BitonicSortRunnable(index + median, median, Bitonic.DESCENDING));
             btLeft.start();
             btRight.start();
             try{
@@ -54,7 +53,7 @@ public class BitonicSortThread extends Thread {
             }
         }
 
-        BitonicMergeThread bmt = new BitonicMergeThread ();
+        BitonicMergeRunnable bmt = new BitonicMergeRunnable ();
         bmt.merge(index, size, direction);
     }
 }

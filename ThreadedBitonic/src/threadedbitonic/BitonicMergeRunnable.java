@@ -9,14 +9,14 @@ package threadedbitonic;
  *
  * @author Wryd
  */
-public class BitonicMergeThread extends Thread{
+public class BitonicMergeRunnable implements Runnable{
     private int _index;
     private int _size;
     private boolean _direction;
     
-    public BitonicMergeThread(){}
+    public BitonicMergeRunnable(){}
     
-    public BitonicMergeThread(int index, int size, boolean direction){
+    public BitonicMergeRunnable(int index, int size, boolean direction){
         _index = index;
         _size = size;
         _direction = direction;
@@ -33,16 +33,15 @@ public class BitonicMergeThread extends Thread{
         if (size <= 1)
             return;
         
-        System.out.println("Merging i:" + index + " s:" + size + " d:" + (direction ? "ASCENDING" : "DESCENDING")
-            );
+        //System.out.println("Merging i:" + index + " s:" + size + " d:" + (direction ? "ASCENDING" : "DESCENDING"));
         int median = size / 2;
         for (int i = index; i < (index + median); i++) {
             Bitonic.compare (i, (i + median), direction);
         }
 
         if (size > Bitonic.minimumLength) {
-            BitonicMergeThread bmtLeft = new BitonicMergeThread (index, median, direction);
-            BitonicMergeThread bmtRight = new BitonicMergeThread (index + median, median, direction);
+            Thread bmtLeft = new Thread (new BitonicMergeRunnable(index, median, direction));
+            Thread bmtRight = new Thread (new BitonicMergeRunnable(index + median, median, direction));
             bmtLeft.start ();
             bmtRight.start ();
 

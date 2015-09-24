@@ -23,7 +23,7 @@ public class ThreadedBitonic {
     
     // Recommended values: Power of 2 numbers. 
     // 2, 4, 8, ... , 4096, 8192, 16384, 32768, 65536, 131072, 524288, 1048576...
-    public static int numberCount = 131072; 
+    public static int numberCount = 524288; 
     
     public static void main(String[] args) {
         System.out.println("Welcome to the ThreadedBitonic app.\n");

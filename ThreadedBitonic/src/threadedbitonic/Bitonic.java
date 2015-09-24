@@ -25,12 +25,11 @@ public class Bitonic{
     
     // For measuring performance.
     private long startTime, endTime, elapsedTime;
-    private int numberOfProcessors = 0;
+    private int numberOfProcessors = 1;
     public static int threadUsed = 0;
 
     public void sort (boolean direction) {
         // Number of threads to use will be equal to the number of processors.
-        numberOfProcessors = Runtime.getRuntime().availableProcessors();
         minimumLength = numbers.length / numberOfProcessors;
         
         // Begin sort.
@@ -38,11 +37,17 @@ public class Bitonic{
     }
 
     private void sort(int index, int size, boolean direction){
+        
         // Start measuring execution time.
         startMeasure();
         
-        BitonicSortThread bt = new BitonicSortThread();
-        bt.sort(index, size, direction);
+        //BitonicSortThread bt = new BitonicSortThread();
+        //bt.sort(index, size, direction);
+        BitonicSortRunnable btr = new BitonicSortRunnable();
+        Thread bt = new Thread(btr);
+        bt.start();
+        btr.sort(index, size, direction);
+        
         
         // End measuring.
         endMeasure();
@@ -53,6 +58,7 @@ public class Bitonic{
     }
     
     public static void compare(int x, int y, boolean direction) {
+        //System.out.println("Comparing indices " + x + " and " + y + " with direction " + (direction ? "ASCENDING" : "DESCENDING"));
         if (direction == (numbers[x] > numbers[y])) {
             swap (x, y);
         }
@@ -62,6 +68,16 @@ public class Bitonic{
         int temp = numbers[i];
         numbers[i] = numbers[j];
         numbers[j] = temp;
+        
+        //System.out.println("Swapped indices " + i + " and " + j + " values " + numbers[j] + " and " + numbers[i]);
+        /*System.out.println("Now: " + numbers[0] + " "
+            + numbers[1] + " "
+            + numbers[2] + " "
+            + numbers[3] + " "
+            + numbers[4] + " "
+            + numbers[5] + " "
+            + numbers[6] + " "
+            + numbers[7] + " ");*/
     }
     
     public void print(){
